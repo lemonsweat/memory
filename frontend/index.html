@@ -21,35 +21,11 @@
 
         <div id="grid"></div>
 
+        <script src="socket.io.min.js"></script>
         <script src="jquery-2.0.3.min.js"></script>
+        <script src="client.js"></script>
 
         <script>
-            // Generate grid of size k
-            function generateGrid(k) {
-                var myTable = '<table><tbody>';
-                for (i = 0; i < k; i++) {
-                    myTable += '  <tr>\n';
-                    for (j = 0; j < k; j++) {
-                        myTable += '    <td class="' + i + j + '" onclick="reveal('+i+','+j+')">' + i + ',' + j + '</td>\n';
-                    }
-                    myTable += '  </tr>\n';
-                }
-                myTable += ' </tbody></table>';
-                document.getElementById('grid').innerHTML = myTable;
-            }
-
-            // Reveal element
-            function reveal(i, j) {
-                // send coordinates to server
-                console.log(i,j);
-
-                // get response and show 
-            }
-
-            function show(i, j, player) {
-                $('.'+i+j).addClass('show').addClass('player2').addClass('location');
-            }
-
             // init
             $(function () {
                 // Generate and set random player name
@@ -58,22 +34,17 @@
                 generateGrid(6);
             
                 setTimeout(function () {
-                    show(1, 1, "player2");
+                    // show(1, 1, "player2", 13);
                 }, 2000);
             });
 
-        </script>
+            var socket = io.connect('http://localhost');
 
-        <script src="socket.io.min.js"></script>
-        <!--
-        <script>
-          var socket = io.connect('http://localhost');
-          socket.on('news', function (data) {
-            console.log(data);
-            socket.emit('my other event', { my: 'data' });
-          });
+            socket.on('news', function (data) {
+                console.log(data);
+                socket.emit('my other event', { my: 'data' });
+            });
         </script>
-        -->
 
     </body>
 </html>

@@ -10,35 +10,47 @@ td {
 	background-color: #ddd;
 
 	color: #eee;
+
+	-webkit-transition: all 300ms ease-in-out;
+	-moz-transition: all 300ms ease-in-out;
+	-o-transition: all 300ms ease-in-out;
+	transition: all 300ms ease-in-out;
 }
 
+td img {
+	vertical-align: middle;
+}
 
 .nav {
 	margin: 10px;
 }
 
 .show {
-	-webkit-transition: all 1s ease-in-out;
-	-moz-transition: all 1s ease-in-out;
-	-o-transition: all 1s ease-in-out;
-	transition: all 1s ease-in-out;
+	
 }
 
 .player1 {
-	background-color: #6699FF;
+	background-color: #29CC9E;
+	background-image: -moz-radial-gradient(45px 45px 45deg, circle cover, #58F5C8 0%, #29CC9E 100%, white 95%);
+	background-image: -webkit-radial-gradient(45px 45px, circle cover, #58F5C8, #29CC9E);
+	background-image: radial-gradient(45px 45px 45deg, circle cover, #58F5C8 0%, #29CC9E 100%, white 95%);
 }
 
 .player2 {
-	background-color: #CC3399;
+	background-color: #EBD915;
+	background-image: -moz-radial-gradient(45px 45px 45deg, circle cover, yellow 0%, orange 100%, red 95%);
+	background-image: -webkit-radial-gradient(45px 45px, circle cover, yellow, orange);
+	background-image: radial-gradient(45px 45px 45deg, circle cover, yellow 0%, orange 100%, red 95%);
+
 }
 
 .location {
-	background-image: url('PNG/32/pin_2.png');
+	/*background-image: url('PNG/32/pin_2.png');*/
 	background-repeat: no-repeat;
 	background-position: center center;
 
-	-webkit-transition: background-position 0s linear;
-	-moz-transition: background-position 0s linear;
-	-o-transition: background-position 0s linear;
-	transition: background-position 0s linear;
+	-webkit-transition: background-position 0s linear, background-color: 1s linear;
+	-moz-transition: background-position 0s linear, background-color: 1s linear;
+	-o-transition: background-position 0s linear, background-color: 1s linear;
+	transition: background-position 0s linear, background-color: 1s linear;
 }
