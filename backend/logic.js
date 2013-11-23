@@ -42,11 +42,11 @@ var exports = {
       return false;
     }
 
-    // console.log("hash number: " + number);
-    // console.log("total cards: " + totalCards);
-    // console.log("num % card : " + number % totalCards);
+    console.log("hash number: " + number);
+    console.log("total cards: " + totalCards);
+    console.log("num % card : " + number % totalCards);
 
-    var board = (number % totalCards) % ((x + 1)  * (y + 1));
+    var board = ((number % totalCards) + ((x + 1)  * (y + 1))) % (totalCards / 2);
     return board
   },
 
