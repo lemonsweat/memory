@@ -9,17 +9,21 @@
 
         <link rel="stylesheet" href="normalize.css">
         <link rel="stylesheet" href="main.css">
-
     </head>
     <body>
         <div class="nav">
-            <form>
+            <form onsubmit="return false;">
                 <input type="text" id="playername" placeholder="player name">
-                <input type="button" onclick="findGame()" value="Find Game">
+                <input type="button" onclick="findRoom();" value="Find Game">
             </form>
+            <p>Status: <span id="message">In lobby, finding an opponent</span></p>
+
+            <p>Opponent: <span id="opponent"></span></p>
+
         </div>
 
         <div id="grid"></div>
+
 
         <script src="socket.io.min.js"></script>
         <script src="jquery-2.0.3.min.js"></script>
@@ -28,6 +32,9 @@
         <script>
             // init
             $(function () {
+                // prefetch images
+                // prefetch();
+
                 // Generate and set random player name
                 $('#playername').val('Player' + (Math.floor(Math.random()*9000) + 1000));
 

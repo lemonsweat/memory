@@ -15,7 +15,7 @@ function generateGrid(k) {
 // Reveal element
 function reveal(i, j) {
     // send coordinates to server
-    console.log(i,j);
+    // console.log(i,j);
 
     show(i, j, "player1", Math.floor(Math.random() * 57) + 1);
 
@@ -24,19 +24,47 @@ function reveal(i, j) {
 
 function show(i, j, player, type) {
     var delay = 400;
-    $('.'+i+j).addClass('show').addClass('player2').addClass('location').html('<img src="PNG/32/' + ICONTYPES[type] + '.png" />');
-    
-    if ($('.show').length >= 2) {
-        var items = $('.show');
-        setTimeout(function () {
-            items[0].innerHTML = items[0].className.split(" ")[0];
-            items[1].innerHTML = items[1].className.split(" ")[0];
-            
-            items[0].className = items[0].className.split(" ")[0];
-            items[1].className = items[1].className.split(" ")[0];
-        }, delay);
+    var i, j;
+
+    if ((selected.length == 1) && (selected[0] == (''+i+j))) {
+        return;
+    }
+
+    selected.push(''+i+j);
+    // console.log(selected);
+
+    // hard coded logic to 
+    $('.'+i+j).addClass('show').addClass('player2').html('<img src="PNG/32/' + ICONTYPES[type] + '.png" />');
+
+    // show only two at a time
+    if (selected.length >= 2) {
+        first = selected.pop();
+        second = selected.pop();
+        
+        // check if match
+        if ($('.'+first).html() == $('.'+second).html()) {
+            $('.'+first).addClass('match').attr('onclick','').unbind('click');;
+            $('.'+second).addClass('match').attr('onclick','').unbind('click');;
+        } else {
+            setTimeout(function () {
+                $('.' + first).html(first).removeClass('player2').removeClass('player1').removeClass('show');
+                $('.' + second).html(second).removeClass('player2').removeClass('player1').removeClass('show');
+            }, delay);
+        }
     }
 }
+
+function findRoom() {
+    var playerName = $('#playername').val();
+}
+
+function prefetch() {
+    for (var icon in ICONTYPES) {
+        $('head').append('<link rel="prefetch" href="PNG/32/' + ICONTYPES[icon] + '.png">');
+    }
+}
+
+var selected = [];
 
 
 var ICONTYPES = [
