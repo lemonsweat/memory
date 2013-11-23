@@ -46,7 +46,8 @@ var exports = {
     console.log("total cards: " + totalCards);
     console.log("num % card : " + number % totalCards);
 
-    var board = ((number % totalCards) + ((x + 1)  * (y + 1))) % (totalCards / 2);
+    var board = ((number % totalCards) + ( (x * boardSize)  + y)) % (totalCards / 2);
+
     return board
   },
 
@@ -79,8 +80,8 @@ var exports = {
 
     return Math.abs(i).toString(16);
 
-    // return ((i>>16)&0xFF).toString(16) + 
-    //     ((i>>8)&0xFF).toString(16) + 
+    // return ((i>>16)&0xFF).toString(16) +
+    //     ((i>>8)&0xFF).toString(16) +
     //     (i&0xFF).toString(16);
     }
 
