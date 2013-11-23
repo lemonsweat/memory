@@ -1,11 +1,31 @@
-var port = 9998,
-    io  = require('socket.io').listen(port, function() {
-        console.log('socket.io started on:', port)
+exports.setupSocket = function(server) {
+
+  var io = require('socket.io').listen(server);
+  //set log level to warn
+  io.set('log level', 1);
+
+  io.sockets.on('connection', function (socket){
+
+    socket.on('bloop', function(message) {
+      var mockData =  [
+        {
+          id: 1,
+          name: "bill"
+        },
+        {
+          id: 2,
+          name: "bob"
+        },
+        {
+          id: 3,
+          name: "ben"
+        },
+      ];
+      socket.emit('bloop', mockData);
+
     });
 
-io.set('log level', 1);
+  });
 
-io.sockets.on('connection', function(socket) {
-    console.log("New client connected!");
-    socket.emit('new:data', "Hello world!");
-});
+
+}
