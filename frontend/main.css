@@ -1,0 +1,39 @@
+table td {
+	border: 1px solid #fff;
+}
+
+td {
+	width: 60px;
+	height: 60px;
+	text-align: center;
+	line-height: 60px;
+	background-color: #ddd;
+
+	color: #eee;
+}
+
+
+.nav {
+	margin: 10px;
+}
+
+.show {
+	-webkit-transition: all 1s ease-in-out;
+	-moz-transition: all 1s ease-in-out;
+	-o-transition: all 1s ease-in-out;
+	transition: all 1s ease-in-out;
+}
+
+.player1 {
+	background-color: #6699FF;
+}
+
+.player2 {
+	background-color: #CC3399;
+}
+
+.location {
+	background-image: url('PNG/32/pin_2.png');
+	background-repeat: no-repeat;
+	background-position: center center;
+}

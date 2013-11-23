@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Memory Games</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="normalize.css">
+        <link rel="stylesheet" href="main.css">
+
+    </head>
+    <body>
+        <div class="nav">
+            <form>
+                <input type="text" id="playername" placeholder="player name">
+                <input type="button" onclick="findGame()" value="Find Game">
+            </form>
+        </div>
+
+        <div id="grid"></div>
+
+        <script src="jquery-2.0.3.min.js"></script>
+
+        <script>
+            // Generate grid of size k
+            function generateGrid(k) {
+                var myTable = '<table><tbody>';
+                for (i = 0; i < k; i++) {
+                    myTable += '  <tr>\n';
+                    for (j = 0; j < k; j++) {
+                        myTable += '    <td class="' + i + j + '" onclick="reveal('+i+','+j+')">' + i + ',' + j + '</td>\n';
+                    }
+                    myTable += '  </tr>\n';
+                }
+                myTable += ' </tbody></table>';
+                console.log(myTable);
+                document.getElementById('grid').innerHTML = myTable;
+            }
+
+            // Reveal element
+            function reveal(i, j) {
+                // send coordinates to server
+                console.log(i,j);
+
+                // get response and show 
+            }
+
+            function show(i, j, player) {
+                $('.'+i+j).addClass('show').addClass('player2').addClass('location');
+            }
+
+            // init
+            $(function () {
+                // Generate and set random player name
+                $('#playername').val('Player' + (Math.floor(Math.random()*9000) + 1000));
+
+                generateGrid(6);
+            
+                setTimeout(function () {
+                    show(1, 1, "player2");
+                }, 2000);
+            });
+
+        </script>
+
+        <script src="socket.io.min.js"></script>
+        <!--
+        <script>
+          var socket = io.connect('http://localhost');
+          socket.on('news', function (data) {
+            console.log(data);
+            socket.emit('my other event', { my: 'data' });
+          });
+        </script>
+        -->
+
+    </body>
+</html>
