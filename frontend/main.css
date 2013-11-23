@@ -36,4 +36,9 @@ td {
 	background-image: url('PNG/32/pin_2.png');
 	background-repeat: no-repeat;
 	background-position: center center;
+
+	-webkit-transition: background-position 0s linear;
+	-moz-transition: background-position 0s linear;
+	-o-transition: background-position 0s linear;
+	transition: background-position 0s linear;
 }
