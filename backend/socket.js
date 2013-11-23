@@ -24,8 +24,5 @@ exports.setupSocket = function(server) {
       socket.emit('bloop', mockData);
 
     });
-
   });
-
-
 }

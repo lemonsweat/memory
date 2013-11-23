@@ -19,8 +19,12 @@ app.configure(function() {
   // app.use(corsMiddleware);
 });
 
+var logic = require('./logic.js');
 app.get('/', function(req, res) {
-  res.send("Hello world");
+  var hash = logic.generateGameHash("hello", "thar");
+  console.log("hash", hash);
+  // res.send("hash: " + hash + "<br/>number: " + logic.convertHashToNumber(hash));
+  res.send(logic.makeSolutionGrid("1d35a9c4", 10));
 });
 
 /** Start server */
