@@ -54,6 +54,14 @@ function show(i, j, player, type) {
     }
 }
 
+function setPlayerName() {
+    if (typeof(Storage) !== "undefined") {
+        return $('#playername').val(localStorage.playername || 'Player' + (Math.floor(Math.random()*9000) + 1000));
+    }
+
+    $('#playername').val('Player' + (Math.floor(Math.random()*9000) + 1000));
+}
+
 function findRoom() {
     var playerName = $('#playername').val();
 }

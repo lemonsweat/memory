@@ -35,14 +35,15 @@
                 // prefetch images
                 // prefetch();
 
-                // Generate and set random player name
-                $('#playername').val('Player' + (Math.floor(Math.random()*9000) + 1000));
+                // persist player name in localstorage
+                $('#playername').keyup(function () {
+                    localStorage.playername = $('#playername').val();
+                });
 
+                // Generate and set random player name
+                setPlayerName();
                 generateGrid(6);
             
-                setTimeout(function () {
-                    // show(1, 1, "player2", 13);
-                }, 2000);
             });
 
             var socket = io.connect('http://localhost');
