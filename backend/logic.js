@@ -6,22 +6,54 @@ var exports = {
   /**
    * Generates the game hash value based on the players
    */
-  generateGameHash: function(player1, player2) {
-    var playerNames = 0;
+  generateGameHash: function(boardSize) {
+    // TODO: Refactor to do something faster and smarter..
+    var totalCards = boardSize * boardSize;
+    var totalUniqueCards = totalCards / 2;
+    var cardsAvailable = [];
 
-    _.each(player1, function(c) {
-      playerNames += c.charCodeAt(0);
+    for (var card = 0; card < totalUniqueCards; card++) {
+        for (var i = 0; i < 2; i++) {
+            cardsAvailable.push(card);
+        }
+    }
+
+    // TODO:might be expensive..
+    var grid = _.range(totalCards);
+
+    var hashCode = 0;
+    var bitsToUse = exports._getBits(boardSize);
+    console.log(bitsToUse);
+
+    var count = 0;
+    _.each(grid, function(entry) {
+        var randIndex = Math.floor(Math.random() * _.size(cardsAvailable));
+        entry = cardsAvailable.pop(randIndex);
+        hashCode |= entry << (bitsToUse * count);
+        count ++;
+        console.log("calc: " + hashCode);
     });
 
-    _.each(player2, function(c) {
-      playerNames += c.charCodeAt(0);
-    });
+    return hashCode;
 
-    var playerNamesSeed = (playerNames * Math.random()) * exports._SEED;
+  },
 
-    return exports.makeHash(playerNamesSeed % Number.MAX_VALUE);
+  _decode: function(hashCode, boardSize, x, y) {
+    var bitsToUse = exports._getBits(boardSize);
 
+    var mask = 0;
+    for (var i = 0; i < bitsToUse; i++) {
+        mask |= 1 << i;
+    }
 
+    var pos = (x * boardSize) + y;
+    var offset = bitsToUse * pos;
+
+    return (hashCode >> offset) & mask;
+  },
+
+  _getBits: function(boardSize) {
+    return Math.ceil(Math.log(boardSize)/Math.log(2));
   },
 
   /**
@@ -42,13 +74,7 @@ var exports = {
       return false;
     }
 
-    console.log("hash number: " + number);
-    console.log("total cards: " + totalCards);
-    console.log("num % card : " + number % totalCards);
-
-    var board = ((number % totalCards) + ( (x * boardSize)  + y)) % (totalCards / 2);
-
-    return board
+    return exports._decode(hashCode, boardSize, x, y);
   },
 
   makeSolutionGrid: function(hashCode, boardSize) {
