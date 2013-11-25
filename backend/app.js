@@ -22,6 +22,9 @@ app.configure(function() {
 var logic = require('./logic.js');
 app.get('/', function(req, res) {
     var grid = logic.generateGrid(10, 10);
+    
+    // var hashKey = logic.generateHashKey("hello", "thar");
+    
     if (grid) {
         res.send(logic.prettyPrintGrid(grid));
     } else {

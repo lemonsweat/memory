@@ -5,6 +5,7 @@ var redis_host      = "pub-redis-18517.us-east-1-2.1.ec2.garantiadata.com",
 
 var _               = require('underscore'),
     _redis_server   = require('redis'),
+    _SEED           = 65456181651689,
     redis           = _redis_server.createClient(redis_port, redis_host);
 
 redis.auth(redis_passwd);
@@ -13,7 +14,7 @@ redis.on('ready', function(val) {
     console.log("ready!");
 });
 
-var redis_util = {
+var redisUtil = {
     getPlayerHash: function(player) {
         var playerHash = 0;
         _.each(player, function(c) {
@@ -32,13 +33,15 @@ var redis_util = {
 }
 
 var exports = {
-  _SEED: 123123137,
 
   generateHashKey: function(player1, player2) {
     var playerHash = 0;
-    playerHash += redis_util.getPlayerHash(player1);
-    playerHash += redis_util.getPlayerHash(player2);
+    playerHash += redisUtil.getPlayerHash(player1);
+    playerHash += redisUtil.getPlayerHash(player2);
+    playerHash *= Math.random() 
+    playerHash = Math.round(playerHash * _SEED);
 
+    return playerHash.toString(36);
   },
 
   generateGrid: function(gridLength, gridWidth) {
@@ -63,6 +66,12 @@ var exports = {
         grid.push(row);
     }
     return grid;
+  },
+
+  getIconAtPosition: function(hashKey, row, col, callback) {
+    redisUtil.getGrid(hashKey, function(callback) {
+
+    });
   },
 
   prettyPrintGrid: function(grid) {
