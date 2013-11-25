@@ -13,18 +13,33 @@ redis.on('ready', function(val) {
     console.log("ready!");
 });
 
-var util = {
+var redis_util = {
     getPlayerHash: function(player) {
         var playerHash = 0;
         _.each(player, function(c) {
             playerHash += c.charCodeAt(0);
         });
         return playerHash;
-  },
+    },
+
+    saveGrid: function(key, grid, callback) {
+        redis.hset(key, grid, callback);
+    },
+
+    getGrid: function(key, callback) {
+        redis.hget(key, calback);
+    }
 }
 
 var exports = {
   _SEED: 123123137,
+
+  generateHashKey: function(player1, player2) {
+    var playerHash = 0;
+    playerHash += redis_util.getPlayerHash(player1);
+    playerHash += redis_util.getPlayerHash(player2);
+
+  },
 
   generateGrid: function(gridLength, gridWidth) {
     if (!gridWidth) {
