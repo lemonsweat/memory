@@ -26,8 +26,6 @@ var util = {
 var exports = {
   _SEED: 123123137,
 
-
-
   generateGrid: function(gridLength, gridWidth) {
     if (!gridWidth) {
         gridWidth = gridLength;
@@ -62,8 +60,6 @@ var exports = {
     });
     return retval;
   }
-
-
 };
 
 
