@@ -143,8 +143,15 @@ var exports = {
     },
 
     getIconAtPosition: function(hashKey, row, col, callback) {
-        redisUtil.getGrid(hashKey, function(list) {
-            
+        // TODO: do we really need to get the whole grid..?
+        // TODO: There has to be a way to only request from redis once b/c
+        //       We will be hitting this code so very often, not really practical
+        //       to make two calls.
+         redisUtil.getGridSize(hashKey, function(width, height) {
+            redisUtil.getGrid(hashKey, function(grid) {
+                var pos = utils.translateIndex(row, col, width, height);
+                callback(grid[pos]);
+            });
         });
     },
 
@@ -164,9 +171,7 @@ var exports = {
                 }
                 callback(retval);
             });
-        });
-
-        
+        });  
     },
 
     purgeRedis: function() {
