@@ -29,7 +29,6 @@ app.get('/', function(req, res) {
 
     var hashKey = logic.newGame(10, "hello", "thar");
 
-    
     logic.prettyPrintGrid(hashKey, function(grid) {
         res.send(grid);
     });

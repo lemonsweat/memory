@@ -49,23 +49,24 @@ var redisUtil = {
 
     _setGrid: function(hashKey, grid) {
         // use saveGrid
-        // TODO: FIXTHIS: flatten grid to push the whole list at once.
-        //      has to be a way to push an entire list without having to
-        //      push it one elment at a time. This should fix bug where
-        //      we're lpushing an array.                
-        redis.lpush(hashKey, grid, function(status, err) {
+
+        // For now use send_command instead of lpush so that
+        // we can push the entire array into redis
+        grid.unshift(hashKey);
+        redis.send_command("lpush", grid, function(err, res) {
             console.log("grid status:", status);
             console.log("error!! ", err);
         });
+        
     },
 
     _setGridSize: function(hashKey, width, height) {
         // use saveGrid
-        redis.hset(hashKey+"xx", this._BOARD_WIDTH_KEY, width, function(status, err) {
+        redis.hset(hashKey+"xx", this._BOARD_WIDTH_KEY, width, function(err, res) {
             console.log("width status:", status);
             console.log("error!! ", err);
         });
-        redis.hset(hashKey+"xx", this._BOARD_HEIGHT_KEY, height, function(status, err) {
+        redis.hset(hashKey+"xx", this._BOARD_HEIGHT_KEY, height, function(err, res) {
             console.log("height status:", status);
             console.log("error!! ", err);
         });
@@ -78,6 +79,10 @@ var redisUtil = {
         redis.hdel(hashKey+"xx", this._BOARD_HEIGHT_KEY, this._BOARD_WIDTH_KEY);
         redis.ldel(hashKey);
     },
+
+    flushDB: function() {
+        redis.flushdb();
+    }
 }
 
 
@@ -125,6 +130,9 @@ var utils = {
 
 var exports = {
     newGame: function(boardSize, player1, player2) {
+        // TODO: Remove this.. don't want to keep purging redis unless we dont want anyone
+        // to win! :D
+        this.purgeRedis();
         var grid = utils.generateGrid(boardSize, boardSize);
         var hashKey = utils.generateHashKey(player1, player2);
         // TODO: remove this once stuff works
@@ -148,7 +156,6 @@ var exports = {
         redisUtil.getGridSize(hashKey, function(width, height) {
             console.log("width, height ", width, height);
             redisUtil.getGrid(hashKey, function(grid) {
-                console.log(grid);
                 for (var i = 0; i < width; i++) {
                     for (var j = 0; j < height; j++) {
                         var pos = utils.translateIndex(i, j, width, height);
@@ -164,7 +171,12 @@ var exports = {
         });
 
         
-    }
+    },
+
+    purgeRedis: function() {
+        // TODO: Remove this later.. don't want to be able to purge the DB
+        redisUtil.flushDB();
+    },
 };
 
 
