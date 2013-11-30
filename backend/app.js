@@ -35,6 +35,21 @@ app.get('/', function(req, res) {
 
 });
 
+app.get('/:hashKey', function(req, res) {
+    var hashKey = req.params.hashKey;
+    var row = req.query.row,
+        col = req.query.col;
+
+    logic.getIconAtPosition(hashKey, row, col, function(iconId) {
+        if (iconId) {
+            res.send(iconId);
+        } else {
+            res.send("unknown hash key", 400);
+        }
+        
+    });
+});
+
 /** Start server */
 
 var server = http.createServer(app);
