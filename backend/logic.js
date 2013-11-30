@@ -54,8 +54,9 @@ var redisUtil = {
         // we can push the entire array into redis
         grid.unshift(hashKey);
         redis.send_command("lpush", grid, function(err, res) {
-            console.log("grid status:", status);
-            console.log("error!! ", err);
+            if (err) {
+                console.error("Problem pushing grid into redis");
+            }
         });
         
     },
@@ -63,12 +64,14 @@ var redisUtil = {
     _setGridSize: function(hashKey, width, height) {
         // use saveGrid
         redis.hset(hashKey+"xx", this._BOARD_WIDTH_KEY, width, function(err, res) {
-            console.log("width status:", status);
-            console.log("error!! ", err);
+            if (err) {
+                console.error("Problem setting width side of the grid on redis");
+            }
         });
         redis.hset(hashKey+"xx", this._BOARD_HEIGHT_KEY, height, function(err, res) {
-            console.log("height status:", status);
-            console.log("error!! ", err);
+           if (err) {
+                console.error("Problem setting height size of the grid on redis");
+           } 
         });
     },
 
@@ -113,7 +116,6 @@ var utils = {
 
         var uniqueCards = totalCards / 2;
         var shuffledCards = _.shuffle(_.range(uniqueCards).concat(_.range(uniqueCards)));
-        console.log(shuffledCards);
         return shuffledCards;
     },
 
@@ -135,8 +137,6 @@ var exports = {
         this.purgeRedis();
         var grid = utils.generateGrid(boardSize, boardSize);
         var hashKey = utils.generateHashKey(player1, player2);
-        // TODO: remove this once stuff works
-        var hashKey = "superman";
 
         redisUtil.saveGrid(hashKey, grid, boardSize, boardSize);
         return hashKey;
@@ -154,14 +154,10 @@ var exports = {
         // TODO: consider using .multi here.
         // TODO: i think im mixing up row/col width/height..
         redisUtil.getGridSize(hashKey, function(width, height) {
-            console.log("width, height ", width, height);
             redisUtil.getGrid(hashKey, function(grid) {
                 for (var i = 0; i < width; i++) {
                     for (var j = 0; j < height; j++) {
                         var pos = utils.translateIndex(i, j, width, height);
-                        // console.log("pos: ", pos);
-                        // console.log("grid: ", typeof(grid));
-                        // console.log("grid pos: ", grid[pos]);
                         retval += grid[pos] + "  ";
                     }
                     retval += "<br/>";
