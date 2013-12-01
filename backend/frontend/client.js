@@ -14,12 +14,18 @@ function generateGrid(k) {
 
 // Reveal element
 function reveal(i, j) {
-    // send coordinates to server
-    // console.log(i,j);
 
-    show(i, j, "player1", Math.floor(Math.random() * 57) + 1);
+    var data = {
+        hashKey: HASHKEY,
+        row: i,
+        col: j
+    };
 
-    // get response and show 
+    socket.emit("reveal:coordinates", data);
+
+
+
+    // get response and show
 }
 
 function show(i, j, player, type) {
@@ -33,14 +39,14 @@ function show(i, j, player, type) {
     selected.push(''+i+j);
     // console.log(selected);
 
-    // hard coded logic to 
+    // hard coded logic to
     $('.'+i+j).addClass('show').addClass('player2').html('<img src="PNG/32/' + ICONTYPES[type] + '.png" />');
 
     // show only two at a time
     if (selected.length >= 2) {
         first = selected.pop();
         second = selected.pop();
-        
+
         // check if match
         if ($('.'+first).html() == $('.'+second).html()) {
             $('.'+first).addClass('match').attr('onclick','').unbind('click');;

@@ -1,3 +1,5 @@
+var logic = require('./logic.js');
+
 exports.setupSocket = function(server) {
 
   var io = require('socket.io').listen(server);
@@ -6,23 +8,35 @@ exports.setupSocket = function(server) {
 
   io.sockets.on('connection', function (socket){
 
-    socket.on('bloop', function(message) {
-      var mockData =  [
-        {
-          id: 1,
-          name: "bill"
-        },
-        {
-          id: 2,
-          name: "bob"
-        },
-        {
-          id: 3,
-          name: "ben"
-        },
-      ];
-      socket.emit('bloop', mockData);
+    socket.on('generate:grid', function(data) {
 
+        // TODO: replace "hello" and "thar" with player names so
+        // we can get a better randomized hash
+        data.hashKey = logic.newGame(data.gridSize, "hello", "thar");
+
+        // logic.prettyPrintGrid(hashKey, function(grid) {
+        //     res.send(grid);
+        // });
+
+
+        socket.emit('generate:grid', data);
     });
+
+    socket.on('reveal:coordinates', function(data) {
+        logic.getIconAtPosition(data.hashKey, data.row, data.col, function(iconId) {
+            if (iconId) {
+                data.iconId = iconId;
+                socket.emit('reveal:coordinates', data);
+            } else {
+                var error = {
+                    'event': 'reveal:coordinates',
+                    'message': 'Unable to get iconId'
+                }
+                socket.emit('error', error);
+            }
+
+        });
+    });
+
   });
 }

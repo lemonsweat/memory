@@ -42,15 +42,33 @@
 
                 // Generate and set random player name
                 setPlayerName();
-                generateGrid(6);
+
 
             });
 
             var socket = io.connect('http://localhost');
+            var HASHKEY = null;
 
             socket.on('news', function (data) {
                 console.log(data);
                 socket.emit('my other event', { my: 'data' });
+            });
+
+            // TODO(jc): we can purge redis in app.js app.get('/', ...)
+            var gridSize = 4;
+
+            socket.on('error', function(data) {
+                console.error(data);
+            });
+
+            socket.emit('generate:grid', {gridSize: gridSize});
+            socket.on('generate:grid', function(data) {
+                HASHKEY = data.hashKey;
+                generateGrid(gridSize);
+            });
+
+            socket.on('reveal:coordinates', function(data) {
+                show(data.row, data.col, "player1", parseInt(data.iconId) + 1);
             });
         </script>
 

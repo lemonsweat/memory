@@ -22,36 +22,10 @@ app.configure(function() {
     // app.use(corsMiddleware);
 });
 
-var logic = require('./logic.js');
+// var logic = require('./logic.js');
 app.get('/', function(req, res) {
-    // var grid = logic.generateGrid(10, 10);
-
-    // TODO: use this hashkey for now to do some testing.
-    // uncomment line below for a random hashkey for every new game.
-    // var hashKey = logic.generateHashKey("hello", "thar");
-
-    var hashKey = logic.newGame(10, "hello", "thar");
-
-    // logic.prettyPrintGrid(hashKey, function(grid) {
-    //     res.send(grid);
-    // });
+    // logic.purgeRedis();
     res.sendfile('frontend/index.html');
-
-});
-
-app.get('/:hashKey', function(req, res) {
-    var hashKey = req.params.hashKey;
-    var row = req.query.row,
-        col = req.query.col;
-
-    logic.getIconAtPosition(hashKey, row, col, function(iconId) {
-        if (iconId) {
-            res.send(iconId);
-        } else {
-            res.send("unknown hash key", 400);
-        }
-
-    });
 });
 
 /** Start server */
