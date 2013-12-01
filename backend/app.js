@@ -1,5 +1,6 @@
 var express = require('express'),
   http = require('http'),
+  jade = require('jade'),
   app = express();
 
 app.locals.pretty = true;
@@ -13,8 +14,10 @@ app.locals.pretty = true;
 app.configure(function() {
     app.set('port', process.argv[2] || process.env.PORT || 1337);
     // app.set('view engine', 'jade');
-    app.set('views', __dirname + '../frontend');
-    app.use('/public', express.static(__dirname + '/public'));
+    app.set('views', __dirname + '/frontend');
+    app.engine('html', require('jade').renderFile);
+    app.use('/public', express.static(__dirname + '/frontend'));
+    app.use('/PNG', express.static(__dirname + '/frontend/PNG'));
     app.use(express.bodyParser());
     // app.use(corsMiddleware);
 });
@@ -29,9 +32,10 @@ app.get('/', function(req, res) {
 
     var hashKey = logic.newGame(10, "hello", "thar");
 
-    logic.prettyPrintGrid(hashKey, function(grid) {
-        res.send(grid);
-    });
+    // logic.prettyPrintGrid(hashKey, function(grid) {
+    //     res.send(grid);
+    // });
+    res.sendfile('frontend/index.html');
 
 });
 
@@ -46,7 +50,7 @@ app.get('/:hashKey', function(req, res) {
         } else {
             res.send("unknown hash key", 400);
         }
-        
+
     });
 });
 

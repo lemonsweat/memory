@@ -7,8 +7,8 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="normalize.css">
-        <link rel="stylesheet" href="main.css">
+        <link rel="stylesheet" href="/public/normalize.css">
+        <link rel="stylesheet" href="/public/main.css">
     </head>
     <body>
         <div class="nav">
@@ -25,9 +25,9 @@
         <div id="grid"></div>
 
 
-        <script src="socket.io.min.js"></script>
-        <script src="jquery-2.0.3.min.js"></script>
-        <script src="client.js"></script>
+        <script src="/public/socket.io.min.js"></script>
+        <script src="/public/jquery-2.0.3.min.js"></script>
+        <script src="/public/client.js"></script>
 
         <script>
             // init
@@ -43,7 +43,7 @@
                 // Generate and set random player name
                 setPlayerName();
                 generateGrid(6);
-            
+
             });
 
             var socket = io.connect('http://localhost');
