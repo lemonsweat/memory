@@ -1,0 +1,68 @@
+table td {
+	border: 1px solid #fff;
+}
+
+td {
+	width: 60px;
+	height: 60px;
+	text-align: center;
+	line-height: 60px;
+	background-color: #ddd;
+	color: #eee;
+
+	-webkit-transition: all 300ms ease-in-out;
+	-moz-transition: all 300ms ease-in-out;
+	-o-transition: all 300ms ease-in-out;
+	transition: all 300ms ease-in-out;
+
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+	cursor: pointer;
+}
+
+td img {
+	vertical-align: middle;
+}
+
+.nav {
+	margin: 10px;
+}
+
+.show {
+
+}
+
+.match {
+	
+}
+
+.player1 {
+	background-color: #29CC9E;
+	background-image: -moz-radial-gradient(45px 45px 45deg, circle cover, #58F5C8 0%, #29CC9E 100%, white 95%);
+	background-image: -webkit-radial-gradient(45px 45px, circle cover, #58F5C8, #29CC9E);
+	background-image: radial-gradient(45px 45px 45deg, circle cover, #58F5C8 0%, #29CC9E 100%, white 95%);
+}
+
+.player2 {
+	background-color: #EBD915;
+	background-image: -moz-radial-gradient(45px 45px 45deg, circle cover, yellow 0%, orange 100%, red 95%);
+	background-image: -webkit-radial-gradient(45px 45px, circle cover, yellow, orange);
+	background-image: radial-gradient(45px 45px 45deg, circle cover, yellow 0%, orange 100%, red 95%);
+
+}
+
+.location {
+	/*background-image: url('PNG/32/pin_2.png');*/
+	background-repeat: no-repeat;
+	background-position: center center;
+
+	-webkit-transition: background-position 0s linear, background-color: 1s linear;
+	-moz-transition: background-position 0s linear, background-color: 1s linear;
+	-o-transition: background-position 0s linear, background-color: 1s linear;
+	transition: background-position 0s linear, background-color: 1s linear;
+}

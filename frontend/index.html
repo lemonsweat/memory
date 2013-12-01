@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Memory Games</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="normalize.css">
+        <link rel="stylesheet" href="main.css">
+    </head>
+    <body>
+        <div class="nav">
+            <form onsubmit="return false;">
+                <input type="text" id="playername" placeholder="player name">
+                <input type="button" onclick="findRoom();" value="Find Game">
+            </form>
+            <p>Status: <span id="message">In lobby, finding an opponent</span></p>
+
+            <p>Opponent: <span id="opponent"></span></p>
+
+        </div>
+
+        <div id="grid"></div>
+
+
+        <script src="socket.io.min.js"></script>
+        <script src="jquery-2.0.3.min.js"></script>
+        <script src="client.js"></script>
+
+        <script>
+            // init
+            $(function () {
+                // prefetch images
+                // prefetch();
+
+                // persist player name in localstorage
+                $('#playername').keyup(function () {
+                    localStorage.playername = $('#playername').val();
+                });
+
+                // Generate and set random player name
+                setPlayerName();
+                generateGrid(6);
+            
+            });
+
+            var socket = io.connect('http://localhost');
+
+            socket.on('news', function (data) {
+                console.log(data);
+                socket.emit('my other event', { my: 'data' });
+            });
+        </script>
+
+    </body>
+</html>
