@@ -70,6 +70,24 @@
             socket.on('reveal:coordinates', function(data) {
                 show(data.row, data.col, "player1", parseInt(data.iconId) + 1);
             });
+
+            // TODO: hook up add score to backend using this event
+            // This will check to make sure that index1 and index2 are the same
+            socket.emit('player:addscore', {
+                hashKey: "7k4m45rtm2w", //HASHKEY
+                player: "player1",
+                index1: {
+                    row: 2,
+                    col: 2
+                },
+                index2: {
+                    row: 2,
+                    col: 3
+                }
+            });
+            socket.on('player:addscore', function(data) {
+                console.log(data);
+            });
         </script>
 
     </body>

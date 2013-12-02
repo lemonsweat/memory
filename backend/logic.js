@@ -15,10 +15,41 @@ redis.on('ready', function(val) {
 });
 
 var redisUtil = {
-    _BOARD_WIDTH_KEY: "bWidth",
-    _BOARD_HEIGHT_KEY: "bHeight",
+    // TODO: maybe group key and field so it's more organized
+    _BOARD_WIDTH_FIELD: "bWidth",
+    _BOARD_HEIGHT_FIELD: "bHeight",
     _META_KEY: ":meta",
+    // field is defined by the player's name. This is a new hash
+    // so we don't have to worry about people's names being 
+    // meta field names
+    _SCORE_KEY: ":score", 
     _EXPIRE_TIME: 3600, // Expire time in seconds
+
+    addScore: function(hashKey, player, index1, index2, callback) {
+        redis.lindex(hashKey, index1, function(err, iconId1) {
+            if (!iconId1) { callback({error: {message: "problem adding score, unknown hash key"}}); return;}
+            redis.lindex(hashKey, index2, function(err, iconId2) {
+                if (!iconId2) { callback({error: {message: "problem adding score, unknown hash key"}}); return;}
+                if (parseInt(iconId1) == parseInt(iconId2)) {
+                    // increase the player's score by 1
+                    var scoreHashKey = hashKey + this._SCORE_KEY;
+                    redis.hincrby(scoreHashKey, player, 1, function(err, score) {
+                        var retval = {score: score};
+                        redis.hgetall(scoreHashKey, function(err, updatedScores) {
+                            retval.updatedScores = updatedScores;
+                            callback(retval);
+                        });
+                    });
+                } else {
+                    callback({
+                        error: {
+                            message: "icons are not the same"
+                        }
+                    });
+                }
+            });
+        });
+    },
 
     getGridElemAtIndex: function(hashKey, index, callback) {
         redis.lindex(hashKey, index, callback);
@@ -29,7 +60,7 @@ var redisUtil = {
      * Returns callback(width, height)
      */
     getGridSize: function(hashKey, callback) {
-        redis.hmget(hashKey + this._META_KEY, this._BOARD_HEIGHT_KEY, this._BOARD_WIDTH_KEY, function(err, boardSize) {
+        redis.hmget(hashKey + this._META_KEY, this._BOARD_HEIGHT_FIELD, this._BOARD_WIDTH_FIELD, function(err, boardSize) {
             callback(boardSize[0], boardSize[1]);
         });
 
@@ -66,12 +97,12 @@ var redisUtil = {
 
     _setGridSize: function(hashKey, width, height) {
         // use saveGrid
-        redis.hset(hashKey + this._META_KEY, this._BOARD_WIDTH_KEY, width, function(err, res) {
+        redis.hset(hashKey + this._META_KEY, this._BOARD_WIDTH_FIELD, width, function(err, res) {
             if (err) {
                 console.error("Problem setting width side of the grid on redis");
             }
         });
-        redis.hset(hashKey + this._META_KEY, this._BOARD_HEIGHT_KEY, height, function(err, res) {
+        redis.hset(hashKey + this._META_KEY, this._BOARD_HEIGHT_FIELD, height, function(err, res) {
            if (err) {
                 console.error("Problem setting height size of the grid on redis");
            } 
@@ -79,11 +110,12 @@ var redisUtil = {
     },
 
     destroyGrid: function(hashKey) {
-        /**
-         * Deletes the grid any anything that uses the same hashkey
-         */
-        redis.del(hashKey + _META_KEY);
+        // By default hashKey contains the grid -- list
         redis.del(hashKey);
+        // Deletes the metadata for the grid -- hash
+        redis.del(hashKey + this._META_KEY);
+        // Deletes the scoring data for the game -- hash
+        redis.del(hashKey + this._SCORE_KEY);
     },
 
     resetExpireOnKey: function(hashKey) {
@@ -149,12 +181,20 @@ var exports = {
     newGame: function(boardSize, player1, player2) {
         // TODO: Remove this.. don't want to keep purging redis unless we dont want anyone
         // to win! :D
-        this.purgeRedis();
+        // this.purgeRedis();
         var grid = utils.generateGrid(boardSize, boardSize);
         var hashKey = utils.generateHashKey(player1, player2);
 
         redisUtil.saveGrid(hashKey, grid, boardSize, boardSize);
         return hashKey;
+    },
+
+    addScore: function(hashKey, player, index1, index2, callback) {
+        redisUtil.getGridSize(hashKey, function(width, height) {
+            var index1Pos = utils.translateIndex(index1.row, index1.col, width, height);
+            var index2Pos = utils.translateIndex(index2.row, index2.col, width, height);
+            redisUtil.addScore(hashKey, player, index1Pos, index2Pos, callback);
+        });
     },
 
     getIconAtPosition: function(hashKey, row, col, callback) {
