@@ -1,6 +1,5 @@
 var express = require('express'),
   http = require('http'),
-  jade = require('jade'),
   app = express();
 
 app.locals.pretty = true;
@@ -15,7 +14,6 @@ app.configure(function() {
     app.set('port', process.argv[2] || process.env.PORT || 1337);
     // app.set('view engine', 'jade');
     app.set('views', __dirname + '/frontend');
-    app.engine('html', require('jade').renderFile);
     app.use('/public', express.static(__dirname + '/frontend'));
     app.use('/PNG', express.static(__dirname + '/frontend/PNG'));
     app.use(express.bodyParser());

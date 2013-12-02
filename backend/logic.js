@@ -17,6 +17,8 @@ redis.on('ready', function(val) {
 var redisUtil = {
     _BOARD_WIDTH_KEY: "bWidth",
     _BOARD_HEIGHT_KEY: "bHeight",
+    _META_KEY: ":meta",
+    _EXPIRE_TIME: 3600, // Expire time in seconds
 
     getPlayerHash: function(player) {
         var playerHash = 0;
@@ -28,23 +30,32 @@ var redisUtil = {
 
     getGridElemAtIndex: function(hashKey, index, callback) {
         redis.lindex(hashKey, index, callback);
+        this.resetExpireOnKey(hashKey);
     },
 
+    /**
+     * Returns callback(width, height)
+     */
     getGridSize: function(hashKey, callback) {
-        redis.hmget(hashKey + "xx", this._BOARD_HEIGHT_KEY, this._BOARD_WIDTH_KEY, function(err, boardSize) {
+        redis.hmget(hashKey + this._META_KEY, this._BOARD_HEIGHT_KEY, this._BOARD_WIDTH_KEY, function(err, boardSize) {
             callback(boardSize[0], boardSize[1]);
         });
+
+        this.resetExpireOnKey(hashKey);
     },
 
     getGrid: function(hashKey, callback) {
         redis.lrange(hashKey, 0, -1, function(err, grid) {
             callback(grid);
         });
+
+        this.resetExpireOnKey(hashKey);
     },
 
     saveGrid: function(hashKey, grid, width, height) {
         this._setGrid(hashKey, grid);
         this._setGridSize(hashKey, width, height);
+        this.resetExpireOnKey(hashKey);
     },
 
     _setGrid: function(hashKey, grid) {
@@ -63,12 +74,12 @@ var redisUtil = {
 
     _setGridSize: function(hashKey, width, height) {
         // use saveGrid
-        redis.hset(hashKey+"xx", this._BOARD_WIDTH_KEY, width, function(err, res) {
+        redis.hset(hashKey + this._META_KEY, this._BOARD_WIDTH_KEY, width, function(err, res) {
             if (err) {
                 console.error("Problem setting width side of the grid on redis");
             }
         });
-        redis.hset(hashKey+"xx", this._BOARD_HEIGHT_KEY, height, function(err, res) {
+        redis.hset(hashKey + this._META_KEY, this._BOARD_HEIGHT_KEY, height, function(err, res) {
            if (err) {
                 console.error("Problem setting height size of the grid on redis");
            } 
@@ -79,8 +90,13 @@ var redisUtil = {
         /**
          * Deletes the grid any anything that uses the same hashkey
          */
-        redis.hdel(hashKey+"xx", this._BOARD_HEIGHT_KEY, this._BOARD_WIDTH_KEY);
+        redis.hdel(hashKey + _META_KEY, this._BOARD_HEIGHT_KEY, this._BOARD_WIDTH_KEY);
         redis.ldel(hashKey);
+    },
+
+    resetExpireOnKey: function(hashKey) {
+        redis.expire(hashKey, this._EXPIRE_TIME);
+        redis.expire(hashKey + this._META_KEY, this._EXPIRE_TIME);
     },
 
     flushDB: function() {
