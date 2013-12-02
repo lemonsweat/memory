@@ -33,9 +33,9 @@ var redisUtil = {
                 if (parseInt(iconId1) == parseInt(iconId2)) {
                     // increase the player's score by 1
                     var scoreHashKey = hashKey + this._SCORE_KEY;
-                    redis.hincrby(scoreHashKey, player, 1, function(err, score) {
+                    redis.zincrby(scoreHashKey, 1, player, function(err, score) {
                         var retval = {score: score};
-                        redis.hgetall(scoreHashKey, function(err, updatedScores) {
+                        redis.zrevrange(scoreHashKey, 0, -1, "WITHSCORES", function(err, updatedScores) {
                             retval.updatedScores = updatedScores;
                             callback(retval);
                         });
