@@ -82,8 +82,8 @@ var redisUtil = {
         /**
          * Deletes the grid any anything that uses the same hashkey
          */
-        redis.hdel(hashKey + _META_KEY, this._BOARD_HEIGHT_KEY, this._BOARD_WIDTH_KEY);
-        redis.ldel(hashKey);
+        redis.del(hashKey + _META_KEY);
+        redis.del(hashKey);
     },
 
     resetExpireOnKey: function(hashKey) {
