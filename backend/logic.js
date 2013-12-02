@@ -27,9 +27,9 @@ var redisUtil = {
 
     addScore: function(hashKey, player, index1, index2, callback) {
         redis.lindex(hashKey, index1, function(err, iconId1) {
-            if (!iconId1) { callback({error: {message: "problem adding score, unknown hash key"}}); return;}
+            if (!iconId1) { callback({error: {message: 'Unable to get iconId'}}); return;}
             redis.lindex(hashKey, index2, function(err, iconId2) {
-                if (!iconId2) { callback({error: {message: "problem adding score, unknown hash key"}}); return;}
+                if (!iconId2) { callback({error: {message: 'Unable to get iconId'}}); return;}
                 if (parseInt(iconId1) == parseInt(iconId2)) {
                     // increase the player's score by 1
                     var scoreHashKey = hashKey + this._SCORE_KEY;
