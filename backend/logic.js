@@ -20,14 +20,6 @@ var redisUtil = {
     _META_KEY: ":meta",
     _EXPIRE_TIME: 3600, // Expire time in seconds
 
-    getPlayerHash: function(player) {
-        var playerHash = 0;
-        _.each(player, function(c) {
-            playerHash += c.charCodeAt(0);
-        });
-        return playerHash;
-    },
-
     getGridElemAtIndex: function(hashKey, index, callback) {
         redis.lindex(hashKey, index, callback);
         this.resetExpireOnKey(hashKey);
@@ -106,14 +98,21 @@ var redisUtil = {
 
 
 var utils = {
+    _getPlayerHash: function(player) {
+        var playerHash = 0;
+        _.each(player, function(c) {
+            playerHash += c.charCodeAt(0);
+        });
+        return playerHash;
+    },
     /**
      * TODO:This will probably work without p1 and p2 also...
      * just need to add some random variable.
      */
     generateHashKey: function(player1, player2) {
         var playerHash = 0;
-        playerHash += redisUtil.getPlayerHash(player1);
-        playerHash += redisUtil.getPlayerHash(player2);
+        playerHash += this._getPlayerHash(player1);
+        playerHash += this._getPlayerHash(player2);
         playerHash *= Math.random() 
         playerHash = Math.round(playerHash * _SEED);
 
